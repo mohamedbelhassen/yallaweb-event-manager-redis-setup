@@ -1,0 +1,15 @@
+{
+  "name": "redis-counter",
+  "version": "1.0.0",
+  "description": "A Redis counter app that generates a random code after counting to 60",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "redis": "^4.6.7",
+    "uuid": "^9.0.0"
+  }
+}
