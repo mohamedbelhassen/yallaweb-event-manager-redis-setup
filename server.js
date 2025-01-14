@@ -15,33 +15,45 @@ const redis = new Redis({
 const countdownTime = 60; // Countdown time in seconds
 
 const startCountdownAndGenerateCode = () => {
-  const generatedCode = crypto.randomBytes(6).toString("hex");
+  const generateAndStoreCode = () => {
+    const generatedCode = crypto.randomBytes(6).toString("hex");
 
-  // Store the generated code in Redis with an expiration time
-  redis.setex("generated_code", countdownTime, generatedCode, (err, reply) => {
-    if (err) {
-      console.error("Error setting code in Redis:", err);
-    } else {
-      console.log("Code stored in Redis:", generatedCode);
-    }
-  });
+    // Store the generated code in Redis with an expiration time
+    redis.setex(
+      "generated_code",
+      countdownTime,
+      generatedCode,
+      (err, reply) => {
+        if (err) {
+          console.error("Error setting code in Redis:", err);
+        } else {
+          console.log("Code stored in Redis:", generatedCode);
+        }
+      }
+    );
 
-  // Start the countdown
-  let countdown = countdownTime;
-  const intervalId = setInterval(() => {
-    countdown--;
-    console.log(`Time remaining: ${countdown}s`);
+    // Start the countdown
+    let countdown = countdownTime;
+    const intervalId = setInterval(() => {
+      countdown--;
+      console.log(`Time remaining: ${countdown}s`);
 
-    if (countdown <= 0) {
-      clearInterval(intervalId);
-      console.log("Countdown finished");
-      // Optionally, reset or clear the generated code after countdown
-      redis.del("generated_code", (err, reply) => {
-        if (err) console.error("Error deleting code:", err);
-        else console.log("Code deleted from Redis");
-      });
-    }
-  }, 1000);
+      if (countdown <= 0) {
+        clearInterval(intervalId);
+        console.log("Countdown finished");
+        // Optionally, reset or clear the generated code after countdown
+        redis.del("generated_code", (err, reply) => {
+          if (err) console.error("Error deleting code:", err);
+          else console.log("Code deleted from Redis");
+        });
+        // Restart the countdown and code generation
+        generateAndStoreCode();
+      }
+    }, 1000);
+  };
+
+  // Initially start the countdown and code generation
+  generateAndStoreCode();
 };
 
 // Endpoint to retrieve the generated code
@@ -57,7 +69,7 @@ app.get("/getCode", (req, res) => {
   });
 });
 
-// Start the countdown and code generation
+// Start the countdown and code generation loop
 startCountdownAndGenerateCode();
 
 // Start the Express server
