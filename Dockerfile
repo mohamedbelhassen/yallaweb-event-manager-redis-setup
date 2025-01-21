@@ -19,6 +19,5 @@ COPY . .
 # Expose ports for both the backend server and Redis
 EXPOSE 3001 6379
 
-# Start Redis and the Node.js app
-CMD ["sh", "-c", "redis-server --bind 0.0.0.0 && node server.js"]
-
+# Start Redis and Node.js using a simple script
+CMD ["sh", "-c", "redis-server --bind 0.0.0.0 & node server.js"]
