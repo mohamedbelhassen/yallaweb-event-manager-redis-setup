@@ -8,3 +8,8 @@ docker build -t redis-parse .
 
 docker run -d -p 3001:3001 6379:6379 
 
+# variables d'environnement
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+PORT=3001
