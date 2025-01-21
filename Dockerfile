@@ -20,5 +20,5 @@ COPY . .
 EXPOSE 3001 6379
 
 # Start Redis and the Node.js app
-CMD ["sh", "-c", "redis-server --daemonize yes && node server.js"]
+CMD ["sh", "-c", "redis-server --bind 0.0.0.0 && node server.js"]
 
