@@ -4,7 +4,8 @@ const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-const port = 3001;
+// const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Add timestamp to logs
 function getTimestamp() {
@@ -24,10 +25,17 @@ const logger = {
 };
 
 // Redis client setup
+// const redis = new Redis({
+  // host: "localhost",
+  // port: 6379,
+// });
+
 const redis = new Redis({
-  host: "localhost",
-  port: 6379,
+  host: process.env.REDIS_HOST || "localhost",
+  port: process.env.REDIS_PORT || 6379,
 });
+
+
 
 redis.on("connect", () => {
   logger.success("Redis connected successfully");
